@@ -1,0 +1,118 @@
+<div class="container">
+	<form class="form-inline container" [formGroup]="searchForm" (ngSubmit)="getListBankAccount()">
+		<div class="row">
+			<div class="form-group mb-2 ml-2">
+				<label for="labelAccountNumber" class="sr-only">Account Number</label>
+				<input type="text" formControlName="account_number" class="form-control" id="labelAccountNumber" placeholder="Account Number">
+			</div>	
+			<div class="form-group mb-2 ml-2">
+				<label for="labelBalance" class="sr-only">Balance</label>
+				<input type="text" formControlName="balance" class="form-control" id="labelBalance" placeholder="Balance">
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelFirstname" class="sr-only">First Name</label>
+				<input type="text" formControlName="firstname" class="form-control" id="labelFirstname" placeholder="First Name">
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelLastname" class="sr-only">Last Name</label>
+				<input type="text" formControlName="lastname" class="form-control" id="labelLastname" placeholder="Last Name">
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelAge" class="sr-only">Age</label>
+				<input type="text" formControlName="age" class="form-control" id="labelAge" placeholder="Age">
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group mb-2 ml-2">
+				<label for="labelGender" class="sr-only">Gender</label>
+				<input type="text" formControlName="gender" class="form-control" id="labelGender" placeholder="Gender">
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelAddress" class="sr-only">Address</label>
+				<input type="text" formControlName="address" class="form-control" id="labelAddress" placeholder="Address">
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelEmployer" class="sr-only">Employeer</label>
+				<input type="text" formControlName="employer" class="form-control" id="labelEmployer" placeholder="Employeer">
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelEmail" class="sr-only">Email</label>
+				<input type="text" formControlName="email" class="form-control" id="labelEmail" placeholder="Email">
+		
+				<div *ngIf="!searchForm.valid && (f.email.touched || f.email.dirty) && f.email.errors" class="alert-danger">
+					<div *ngIf="f.email.errors.emailNotValid">Email is not valid</div>
+				</div>
+			</div>
+			<div class="form-group mb-2 ml-2">
+				<label for="labelCity" class="sr-only">City</label>
+				<input type="text" formControlName="city" class="form-control" id="labelCity" placeholder="City">
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group mb-2 ml-2">
+				<label for="labelState" class="sr-only">State</label>
+				<input type="text" formControlName="state" class="form-control" id="labelState" placeholder="State">
+			</div>
+		</div>
+
+
+		<button type="submit" class="btn btn-primary mb-2 mr-2">Search</button>
+	</form>
+
+	<table class="table">
+		<thead class="thead-light">
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Account Number</th>
+				<th scope="col">Balance</th>
+				<th scope="col">First Name</th>
+				<th scope="col">Last Name</th>
+				<th scope="col">Age</th>
+				<th scope="col">Gender</th>
+				<th scope="col">Employeer</th>
+				<th scope="col">Email</th>
+				<th scope="col">City</th>
+				<th scope="col">State</th>
+			</tr>
+		</thead>
+		<tbody>
+			<ng-template [ngIf]="listBankAccountData.length > 0">
+				<tr *ngFor="let account of listBankAccountData 		
+				| paginate: { 
+					id: 'list_account_table',
+					itemsPerPage: itemsPerPage, 
+					currentPage: pageNumber, 
+					totalItems: totalItems 
+				}; index as i">
+					<th scope="row">{{startRowIndex + i}}</th>
+					<td>{{account.account_number}}</td>
+					<td>{{account.balance}}</td>
+					<td>{{account.firstname}}</td>
+					<td>{{account.lastname}}</td>
+					<td>{{account.age}}</td>
+					<td>{{account.gender}}</td>
+					<td>{{account.employer}}</td>
+					<td>{{account.email}}</td>
+					<td>{{account.city}}</td>
+					<td>{{account.state}}</td>
+				</tr>
+			</ng-template>
+		</tbody>
+	</table>
+	<div class="text-center">
+		<pagination-controls  id="list_account_table"
+			(pageChange)="pageChanged($event)"
+			(pageBoundsCorrection)="pageChanged($event)"
+			maxSize="9"
+			directionLinks="true"
+			autoHide="false"
+			responsive="true"
+			previousLabel="Previous"
+			nextLabel="Next"
+			screenReaderPaginationLabel="Pagination"
+			screenReaderPageLabel="page"
+			screenReaderCurrentLabel="You're on page">
+		</pagination-controls>
+	</div>
+
+</div>
