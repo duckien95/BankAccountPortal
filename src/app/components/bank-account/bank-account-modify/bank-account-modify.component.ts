@@ -72,13 +72,19 @@ export class BankAccountModifyComponent implements OnInit {
 	getDetailBankAccount(){
 		this.bankAccountService.getDetailBankAccount(this.accountId)
 		.subscribe(
-			dataResponse => {
+			response => {
 				// if response data is not empty
-				if(dataResponse.data && dataResponse.data.length > 0){
-					// console.log(dataResponse.data)
-					this.accountData = dataResponse.data[0];
-				} else this.accountData = new BankAccountModel();
-				this.modifyForm.patchValue(this.accountData);
+				if(response.success){
+					let accountData = response.data.accounts;
+					if(accountData && accountData.length > 0){
+						// console.log(dataResponse.data)
+						this.accountData = accountData[0];
+					} else 
+						this.accountData = new BankAccountModel();
+				} else 
+					this.toast.showError(response.message);
+				
+				this.modifyForm.patchValue(this.accountData);					
 			},
 			error => {
 				this.toast.showError(error);
@@ -95,16 +101,21 @@ export class BankAccountModifyComponent implements OnInit {
 			if(this.accountId){
 				this.bankAccountService.updateBankAccount(this.accountId, this.modifyForm.value)
 				.subscribe(
-					dataResponse => {
+					response => {
 						// if response data is not empty
-						// console.log(dataResponse);
-						if(dataResponse.data && dataResponse.data.length > 0){
-							// console.log(dataResponse.data)
-							this.accountData = dataResponse.data[0];
-						} else this.accountData = new BankAccountModel();
-						this.toast.showSuccess("Update success");
-						this.closeConfirmModal();
-						this.reloadFormAndListPage();
+						if(response.success){
+							let accountData = response.data.accounts;
+							if(accountData && accountData.length > 0){
+								// console.log(dataResponse.data)
+								this.accountData = accountData[0];
+							} else 
+								this.accountData = new BankAccountModel();
+							this.toast.showSuccess(response.message);
+							this.closeConfirmModal();
+							this.reloadFormAndListPage();
+						} else 
+							this.toast.showError(response.message);
+
 					},
 					error => {
 						this.toast.showError(error);
@@ -115,16 +126,21 @@ export class BankAccountModifyComponent implements OnInit {
 				// create bank account			
 				this.bankAccountService.createBankAccount(this.modifyForm.value)
 				.subscribe(
-					dataResponse => {
+					response => {
 						// if response data is not empty
-						if(dataResponse.data && dataResponse.data.length > 0){
-							// console.log(dataResponse.data)
-							this.accountData = dataResponse.data[0];
-							this.accountId = this.accountData.account_id;
-						} else this.accountData = new BankAccountModel();
-						this.toast.showSuccess("Create success");
-						this.closeConfirmModal();
-						this.reloadFormAndListPage();
+						if(response.success){
+							let accountData = response.data.accounts;
+							if(accountData && accountData.length > 0){
+								// console.log(dataResponse.data)
+								this.accountData = accountData[0];
+								this.accountId = this.accountData.account_id;
+							} else
+								this.accountData = new BankAccountModel();
+							this.toast.showSuccess(response.message);
+							this.closeConfirmModal();
+							this.reloadFormAndListPage();
+						} else 
+							this.toast.showError(response.message);
 					},
 					error => {
 						this.toast.showError(error);

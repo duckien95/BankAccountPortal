@@ -75,13 +75,19 @@ export class BankAccountListComponent implements OnInit {
 		this.searchData = {...this.searchData, ...this.searchForm.value};
 		this.bankAccountService.getListBankAccount(this.searchData)
 			.subscribe(
-				dataResponse => {
+				response => {
 					// if response data is not empty
-					if(dataResponse.data && dataResponse.data.length > 0){
-						// console.log(dataResponse.data);
-						this.listBankAccountData = dataResponse.data;
-						this.totalItems = dataResponse.total_item;
-					} else this.listBankAccountData = [];
+					if(response.success){
+						let responseData = response.data;
+						if(responseData.accounts && responseData.accounts.length > 0){
+							// console.log(response.data);
+							this.listBankAccountData = responseData.accounts;
+							this.totalItems = responseData.total_item;
+						} else 
+							this.listBankAccountData = [];
+					} else 
+						this.toast.showError(response.message);
+
 				},
 				error => {
 					// console.error(error);
@@ -104,6 +110,9 @@ export class BankAccountListComponent implements OnInit {
 				this.selectedAccountId = id;
 				this.bankAccountModifyComponent.accountId = id;
 				this.bankAccountModifyComponent.getDetailBankAccount();
+			} else {
+				this.bankAccountModifyComponent.accountId = null;
+				this.bankAccountModifyComponent.modifyForm.reset();
 			}
 			$('#modify-bank-account-modal').modal('show');
 		} else this.toast.showError(ConfigSetting.MessageErrorPermissionDeny);
@@ -121,9 +130,9 @@ export class BankAccountListComponent implements OnInit {
 		if(this.authenticateService.isAdmin()){
 			this.bankAccountService.deleteBankAccount(this.selectedAccountId)
 			.subscribe(
-				dataResponse => {
-					if(dataResponse.success == 1){
-						this.toast.showSuccess("Delete success");
+				response => {
+					if(response.success){
+						this.toast.showSuccess(response.message);
 						this.selectedAccountId = null;
 						this.getListBankAccount();
 						$('#confirm-modal').modal('hide');
